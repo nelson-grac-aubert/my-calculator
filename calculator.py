@@ -1,4 +1,4 @@
-allowed_characters = '0123456789+-/*(). '
+allowed_characters = '0123456789+-/*(). \n\r'
 running = True 
 history = []
 
@@ -42,7 +42,7 @@ def check_characters(allowed_characters):
     Returns input string if correct """
 
     while True:
-        user_input = input("Enter your mathematical expression composed of only numbers and operators: ")
+        user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
         invalid_found = False
         
@@ -73,6 +73,7 @@ def format_string(checked_string) :
     if current_number != "":
        input_turned_into_list.append(current_number)
     
+    print(f"\nLa string formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
 def multiply(left, right):
@@ -93,16 +94,18 @@ def substract(left, right):
 def run_calculator():
     while running:
         checked_expression = check_characters(allowed_characters)
-        input_formated_list = format_string(checked_expression)
+        expression_list = format_string(checked_expression)
 
         try:
-            result = "ici la fonction qui va faire les opérations dans l'ordre et retourner le resultat"
-            print("Result:", result)
-            break
+            result = "ici le résultat quand on aura la fonction pour le calculer"
+            print(f"\nResult: {result}\n")
+            input("Press Enter to continue...")
+            return
 
         except ZeroDivisionError:
             print("Division by 0 is not allowed. Please enter a new expression.\n")
             continue
+
 
 if __name__ == "__main__" : 
 
