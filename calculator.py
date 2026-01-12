@@ -1,6 +1,40 @@
 allowed_characters = '0123456789+-/*(). '
 running = True 
 
+def menu():
+    history = []
+
+    while True:
+        print("\n--- CALCULATOR ---")
+        print("1 - New calculation")
+        print("2 - View history")
+        print("3 - Clear history")
+        print("4 - Exit")
+
+        choice = input("Your choice: ")
+
+        if choice == "1":
+            run_calculator()
+
+        elif choice == "2":
+            if not history:
+                print("History is empty.")
+            else:
+                print("\n--- History ---")
+                for h in history:
+                    print(h)
+
+        elif choice == "3":
+            history.clear()
+            print("History cleared.")
+
+        elif choice == "4":
+            print("See you soon!")
+            break
+
+        else:
+            print("Invalid choice")
+
 def check_characters(allowed_characters):
     """ Asks for user input 
     If user input has non-allowed characters, displays error message and asks again 
@@ -64,10 +98,11 @@ def run_calculator():
             break
         else:
             print("Please enter a new expression.\n")
-        
+
+
 if __name__ == "__main__" : 
 
-    run_calculator() 
+    menu()
 
     
         

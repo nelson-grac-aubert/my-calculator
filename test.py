@@ -64,7 +64,7 @@ def calculator():
 
         if choice == "1":
 
-            # Calculs
+            print("ici la fonction pour lancer la calculatrice")
 
         elif choice == "2":
 
