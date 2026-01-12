@@ -6,49 +6,82 @@ def check_characters(expression):
             return False
     return True
 
-
 def calculator():
     while True:
-        user_input = input(
-            "\nEnter a mathematical expression"
-            "(or 'q' for left) : "
-        )
+        print("Calculator")
+        print("Available operations :")
+        print("+  addition")
+        print("-  subtraction")
+        print("*  multiplication")
+        print("/  division")
+        print("l  left")
 
-        if user_input.lower() == "q":
+        operation = input("Choice your operation :")
+
+        if operation.lower() == "l":
             print("See you soon")
             break
 
-        if check_characters(user_input):
-            try:
-                result = eval(user_input)
-                print("Result :", result)
-            except ZeroDivisionError:
-                print("Error : division by zero")
-            except:
-                print("Error in the expression ")
-        else:
-            print("Unauthorized characters! ")
-            print("Allowed characters: numbers, + - * / ( )")
+        if operation not in ["+", "-", "*", "/"]:
+            print("Invalid operation")
+            continue
+
+        try:
+            num1 = float(input("Enter the first number : "))
+            num2 = float(input("Enter the second number : "))
+        except ValueError:
+            print("Error : Please enter valid numbers")
+            continue
+
+        if operation == "+":
+            print("Result :", num1 + num2)
+        elif operation == "-":
+            print("Result :", num1 - num2)
+        elif operation == "*":
+            print("Result :", num1 * num2)
+        elif operation == "/":
+            if num2 == 0:
+                print("Error: division by zero")
+            else:
+                print("Result :", num1 / num2)
 
 
 if __name__ == "__main__":
     calculator()
 
 
-
-
-def calculatrice():
-    historique = []
+def calculator():
+    history = []
 
     while True:
-        print("\n--- CALCULATRICE ---")
-        print("1 - Nouveau calcul")
-        print("2 - Voir l'historique")
-        print("3 - Effacer l'historique")
-        print("4 - Quitter")
+        print("\n--- CALCULATOR ---")
+        print("1 - New calculation")
+        print("2 - View history")
+        print("3 - Clear history")
+        print("4 - Exit")
 
-        choix = input("Votre choix : ")
+        choice = input("Your choice: ")
 
-        if choix == "1":
-            expression = input("Entrez une expression (ex: 3 + 5 * 2) : ")
+        if choice == "1":
 
+            # Calculs
+
+        elif choice == "2":
+
+            if not history:
+                print("History is empty.")
+            else:
+                print("\n--- History ---")
+                for h in history:
+                    print(h)
+
+        elif choice == "3":
+            history.clear()
+            print("History cleared.")
+
+        elif choice == "4":
+            print("See you soon!")
+            break
+
+        else:
+            print("Invalid choice")
