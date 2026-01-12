@@ -1,8 +1,9 @@
 allowed_characters = '0123456789+-/*(). '
 running = True 
+history = []
 
 def menu():
-    history = []
+    global history
 
     while True:
         print("\n--- CALCULATOR ---")
@@ -74,31 +75,34 @@ def format_string(checked_string) :
     
     return input_turned_into_list
 
-def check_division_by_0(input_turned_into_list) : 
-    """ Checks the list for a division by 0 """
-    for i in range (len(input_turned_into_list) - 1) : 
-        if input_turned_into_list[i] == "/" and input_turned_into_list[i+1] == "0" : 
-            print("Division by 0 is not allowed")
-            return False
-    return True
+def multiply(left, right):
+    return float(left) * float(right)
 
-def detect_priority(list) : 
-    for element in list : 
-        if element == "/" or "*" : 
-            priority_operation_detected = True 
-            break
-    return priority_operation_detected
+def divide(left, right):
+    right = float(right)
+    if right == 0:
+        raise ZeroDivisionError("Division by 0 is not allowed")
+    return float(left) / right
+
+def add(left, right):
+    return float(left) + float(right)
+
+def substract(left, right):
+    return float(left) - float(right)
 
 def run_calculator():
     while running:
         checked_expression = check_characters(allowed_characters)
-        input_turned_into_list = format_string(checked_expression)
-        print(input_turned_into_list)
-        if check_division_by_0(input_turned_into_list):
-            break
-        else:
-            print("Please enter a new expression.\n")
+        input_formated_list = format_string(checked_expression)
 
+        try:
+            result = "ici la fonction qui va faire les opérations dans l'ordre et retourner le resultat"
+            print("Result:", result)
+            break
+
+        except ZeroDivisionError:
+            print("Division by 0 is not allowed. Please enter a new expression.\n")
+            continue
 
 if __name__ == "__main__" : 
 
