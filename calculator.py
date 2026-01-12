@@ -99,6 +99,9 @@ def run_calculator():
         try:
             result = "ici le résultat quand on aura la fonction pour le calculer"
             print(f"\nResult: {result}\n")
+
+            history.append(f"{checked_expression} = {result}")
+
             input("Press Enter to continue...")
             return
 
