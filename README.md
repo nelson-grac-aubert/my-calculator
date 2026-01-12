@@ -1,7 +1,8 @@
 # Python Terminal Calculator
 
 ## Description
-Calculatrice qui permet à l'utilisateur d'écrire des expressions mathématiques et de les évaluer
+Calculatrice qui permet à l'utilisateur d'écrire des expressions mathématiques et de les évaluer.
+Possibilité d'accéder à l'historique et de le supprimer également.
 
 ## Prérequis
 Python
@@ -14,7 +15,7 @@ Python
 
 
 ## Difficultés rencontrées
-
+Configuration de GitHub
 
 ## Améliorations possibles
 
