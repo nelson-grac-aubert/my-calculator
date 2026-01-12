@@ -73,7 +73,7 @@ def format_string(checked_string) :
     if current_number != "":
        input_turned_into_list.append(current_number)
     
-    print(f"\nLa string formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
+    print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
 def multiply(left, right):
@@ -95,6 +95,9 @@ def run_calculator():
     while running:
         checked_expression = check_characters(allowed_characters)
         expression_list = format_string(checked_expression)
+
+        # dans le try on aura result = calculate(expression_list)
+        # calculate() etant la fonction qui va gerer l'ordre des priorités et les parenthèses
 
         try:
             result = "ici le résultat quand on aura la fonction pour le calculer"
