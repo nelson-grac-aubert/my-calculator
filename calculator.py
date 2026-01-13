@@ -54,14 +54,14 @@ def check_characters(allowed_characters):
             return user_input
 
 def previous_non_space_char(index, checked_string):
-        """ Returns the previous element of the formatted list 
-        Used to determine if a - is an operator or a negative number """
-        previous_index = index - 1
-        while previous_index >= 0 and checked_string[previous_index] == " ":
-            previous_index -= 1
-        if previous_index >= 0:
-            return checked_string[previous_index]
-        return None
+    """ Returns the previous element of the formatted list 
+    Used to determine if a - is an operator or a negative number """
+    previous_index = index - 1
+    while previous_index >= 0 and checked_string[previous_index] == " ":
+        previous_index -= 1
+    if previous_index >= 0:
+        return checked_string[previous_index]
+    return None
 
 def format_string(checked_string):
     """ Transforms the user input string into a formated list of numbers and operators 
