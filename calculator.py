@@ -51,24 +51,28 @@ def check_characters(allowed_characters):
         if not invalid_found:
             return user_input
 
+def previous_non_space_char(index, checked_string):
+        previous_index = index - 1
+        while previous_index >= 0 and checked_string[previous_index] == " ":
+            previous_index -= 1
+        if previous_index >= 0:
+            return checked_string[previous_index]
+        return None
+
 def format_string(checked_string):
     input_turned_into_list = []
     current_number = ""
     i = 0
 
-    def previous_non_space_char(index):
-        j = index - 1
-        while j >= 0 and checked_string[j] == " ":
-            j -= 1
-        if j >= 0:
-            return checked_string[j]
-        return None
+    if checked_string[-1] in "+-//*().%^" : 
+        print("\nError : expression ends in an operator not followed by a number")
+        check_characters(allowed_characters)
 
     while i < len(checked_string):
         character = checked_string[i]
 
         if character == "-":
-            prev_char = previous_non_space_char(i)
+            prev_char = previous_non_space_char(i, checked_string)
             if prev_char is None or prev_char in "+-*/%^(":
                 current_number = "-"
                 i += 1
@@ -97,10 +101,6 @@ def format_string(checked_string):
 
     if current_number != "":
         input_turned_into_list.append(current_number)
-    
-    if checked_string[-1] in "+-//*().%^" : 
-        print("\nError : expression ends in an operator not followed by a number")
-        check_characters(allowed_characters)
 
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
