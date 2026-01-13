@@ -83,7 +83,7 @@ def divide(left, right):
     right = float(right)
     if right == 0:
         raise ZeroDivisionError("Division by 0 is not allowed")
-    return float(left) / right
+    return float(left) / float(right)
 
 def add(left, right):
     return float(left) + float(right)
@@ -91,7 +91,32 @@ def add(left, right):
 def substract(left, right):
     return float(left) - float(right)
 
+def calculate(formated_list) : 
+    for i in range(len(formated_list)) : 
+        if formated_list[i] == "/" : 
+            left = formated_list[i-1] 
+            right = formated_list[i+1]
+            result = divide(left, right)
+
+        if formated_list[i] == "*" : 
+            left = formated_list[i-1] 
+            right = formated_list[i+1]
+            result = multiply(left, right)
+    
+        if formated_list[i] == "+" : 
+            left = formated_list[i-1] 
+            right = formated_list[i+1]
+            result = add(left, right)
+    
+        if formated_list[i] == "-" : 
+            left = formated_list[i-1] 
+            right = formated_list[i+1]
+            result = substract(left, right)
+
+    return result
+
 def run_calculator():
+    global history
     while running:
         checked_expression = check_characters(allowed_characters)
         expression_list = format_string(checked_expression)
@@ -100,7 +125,7 @@ def run_calculator():
         # calculate() etant la fonction qui va gerer l'ordre des priorités et les parenthèses
 
         try:
-            result = "ici le résultat quand on aura la fonction pour le calculer"
+            result = calculate(expression_list)
             print(f"\nResult: {result}\n")
 
             history.append(f"{checked_expression} = {result}")
