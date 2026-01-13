@@ -1,4 +1,4 @@
-allowed_characters = '0123456789+-/*(). \n\r'
+allowed_characters = '0123456789+-/*().% \n\r'
 running = True 
 history = []
 
@@ -83,7 +83,7 @@ def divide(left, right):
     right = float(right)
     if right == 0:
         raise ZeroDivisionError("Division by 0 is not allowed")
-    return float(left) / float(right)
+    return float(left) / (right)
 
 def add(left, right):
     return float(left) + float(right)
@@ -91,29 +91,45 @@ def add(left, right):
 def substract(left, right):
     return float(left) - float(right)
 
+def modulo(left,right):
+    return float(left) % float(right)
+
+def divide_whole(left, right):
+    right = float(right)
+    if right == 0:
+        raise ZeroDivisionError("Division by 0 is not allowed")
+    return float(left) // (right)
+
+# def calculate(formated_list) : 
+#     for i in range(len(formated_list)) : 
+#         if formated_list[i] == "/" : 
+#             left = formated_list[i-1] 
+#             right = formated_list[i+1]
+#             result = divide(left, right)
+
+#         if formated_list[i] == "*" : 
+#             left = formated_list[i-1] 
+#             right = formated_list[i+1]
+#             result = multiply(left, right)
+    
+#         if formated_list[i] == "+" : 
+#             left = formated_list[i-1] 
+#             right = formated_list[i+1]
+#             result = add(left, right)
+    
+#         if formated_list[i] == "-" : 
+#             left = formated_list[i-1] 
+#             right = formated_list[i+1]
+#             result = substract(left, right)
+
+
+    # return result
+
 def calculate(formated_list) : 
+    # d'abord on fait une nouvelle liste où les multiplications et les divisiosn sont evaluées
+    list_without_div_mult = []
     for i in range(len(formated_list)) : 
-        if formated_list[i] == "/" : 
-            left = formated_list[i-1] 
-            right = formated_list[i+1]
-            result = divide(left, right)
-
-        if formated_list[i] == "*" : 
-            left = formated_list[i-1] 
-            right = formated_list[i+1]
-            result = multiply(left, right)
-    
-        if formated_list[i] == "+" : 
-            left = formated_list[i-1] 
-            right = formated_list[i+1]
-            result = add(left, right)
-    
-        if formated_list[i] == "-" : 
-            left = formated_list[i-1] 
-            right = formated_list[i+1]
-            result = substract(left, right)
-
-    return result
+        if 
 
 def run_calculator():
     global history
