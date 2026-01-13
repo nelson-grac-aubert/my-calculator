@@ -1,4 +1,4 @@
-allowed_characters = '0123456789+-/*().%^ \n\r'
+allowed_characters = '0123456789+-//*().%^ \n\r'
 running = True 
 history = []
 
@@ -37,10 +37,6 @@ def menu():
             print("Invalid choice")
 
 def check_characters(allowed_characters):
-    """ Asks for user input 
-    If user input has non-allowed characters, displays error message and asks again 
-    Returns input string if correct """
-
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
@@ -48,7 +44,7 @@ def check_characters(allowed_characters):
         
         for character in user_input:
             if character not in allowed_characters:
-                print("Allowed characters are digits 0-9 and operators + - / * ()")
+                print("Allowed characters are digits 0-9 and operators + - / // * () % ^")
                 invalid_found = True
                 break 
 
@@ -71,7 +67,7 @@ def format_string(checked_string):
         if character==" ":
             i+=1
             continue
-        if character=="/" and i+1<len(checked_string) and checked_string[i+1]=="/":
+        if character=="/" and i+1<len(checked_string) and checked_string[i+1]=="//":
             input_turned_into_list.append("//")
             i+=2
             continue
@@ -114,64 +110,80 @@ def power(left,right):
         result=result*left
     return result
 
-def calculate(formated_list):
-    list_without_power=[]
-    i=0
-    while i<len(formated_list):
-        token=formated_list[i]
-        match token:
-            case "^":
-                list_without_power[-1]=power(list_without_power[-1],formated_list[i+1])
-                i+=2
-                continue
-            case _:
-                list_without_power.append(token)
-                i+=1
-    list_without_div_mult=[]
-    i=0
-    while i<len(list_without_power):
-        token=list_without_power[i]
-        match token:
+def pass_power(tokens):
+    result = []
+    i = 0
+
+    while i < len(tokens):
+        current_element = tokens[i]
+
+        if current_element == "^":
+            result[-1] = power(result[-1], tokens[i+1])
+            i += 2
+            continue
+
+        result.append(current_element)
+        i += 1
+
+    return result
+
+def pass_mult_div(tokens):
+    result = []
+    i = 0
+
+    while i < len(tokens):
+        current_element = tokens[i]
+        match current_element:
             case "*":
-                list_without_div_mult[-1]=multiply(list_without_div_mult[-1],list_without_power[i+1])
-                i+=2
+                result[-1] = multiply(result[-1], tokens[i+1])
+                i += 2
                 continue
             case "/":
-                list_without_div_mult[-1]=divide(list_without_div_mult[-1],list_without_power[i+1])
-                i+=2
+                result[-1] = divide(result[-1], tokens[i+1])
+                i += 2
                 continue
             case "//":
-                list_without_div_mult[-1]=divide_whole(list_without_div_mult[-1],list_without_power[i+1])
-                i+=2
+                result[-1] = divide_whole(result[-1], tokens[i+1])
+                i += 2
                 continue
             case "%":
-                list_without_div_mult[-1]=modulo(list_without_div_mult[-1],list_without_power[i+1])
-                i+=2
+                result[-1] = modulo(result[-1], tokens[i+1])
+                i += 2
                 continue
             case _:
-                list_without_div_mult.append(token)
-                i+=1
-    result=float(list_without_div_mult[0])
-    i=1
-    while i<len(list_without_div_mult):
-        op=list_without_div_mult[i]
-        right=list_without_div_mult[i+1]
-        match op:
-            case "+":
-                result=add(result,right)
-            case "-":
-                result=substract(result,right)
-        i+=2
+                result.append(current_element)
+                i += 1
+
     return result
+
+def pass_add_sub(tokens):
+    result = float(tokens[0])
+    i = 1
+
+    while i < len(tokens):
+        operator = tokens[i]
+        right = tokens[i+1]
+
+        match operator:
+            case "+":
+                result = add(result, right)
+            case "-":
+                result = substract(result, right)
+
+        i += 2
+
+    return result
+
+def calculate(tokens):
+    tokens = pass_power(tokens)
+    tokens = pass_mult_div(tokens)
+    return pass_add_sub(tokens)
         
 def run_calculator():
     global history
     while running:
         checked_expression = check_characters(allowed_characters)
         expression_list = format_string(checked_expression)
-
-        # dans le try on aura result = calculate(expression_list)
-        # calculate() etant la fonction qui va gerer l'ordre des priorités et les parenthèses
 
         try:
             result = calculate(expression_list)
@@ -186,12 +198,5 @@ def run_calculator():
             print("Division by 0 is not allowed. Please enter a new expression.\n")
             continue
 
-
-if __name__ == "__main__" : 
-
+if __name__ == "__main__" :
     menu()
-
-    
-        
-
-
