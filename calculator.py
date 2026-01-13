@@ -44,7 +44,7 @@ def check_characters(allowed_characters):
         
         for character in user_input:
             if character not in allowed_characters:
-                print("Allowed characters are digits 0-9 and operators + - / // * () % ^")
+                print("Allowed characters are digits 0-9 and operators . + - / // * () % ^")
                 invalid_found = True
                 break 
 
@@ -99,7 +99,7 @@ def format_string(checked_string):
         input_turned_into_list.append(current_number)
     
     if checked_string[-1] in "+-//*().%^" : 
-        print("\n Error : expression ends in an operator not followed by a number")
+        print("\nError : expression ends in an operator not followed by a number")
         check_characters(allowed_characters)
 
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
