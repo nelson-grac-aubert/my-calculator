@@ -52,29 +52,52 @@ def check_characters(allowed_characters):
             return user_input
 
 def format_string(checked_string):
-    input_turned_into_list=[]
-    current_number=""
-    i=0
-    while i<len(checked_string):
-        character=checked_string[i]
+    input_turned_into_list = []
+    current_number = ""
+    i = 0
+
+    def previous_non_space_char(index):
+        j = index - 1
+        while j >= 0 and checked_string[j] == " ":
+            j -= 1
+        if j >= 0:
+            return checked_string[j]
+        return None
+
+    while i < len(checked_string):
+        character = checked_string[i]
+
+        if character == "-":
+            prev_char = previous_non_space_char(i)
+            if prev_char is None or prev_char in "+-*/%^(":
+                current_number = "-"
+                i += 1
+                continue
+
         if character in "0123456789.":
-            current_number+=character
-            i+=1
+            current_number += character
+            i += 1
             continue
-        if current_number!="":
+
+        if current_number != "":
             input_turned_into_list.append(current_number)
-            current_number=""
-        if character==" ":
-            i+=1
+            current_number = ""
+
+        if character == " ":
+            i += 1
             continue
-        if character=="/" and i+1<len(checked_string) and checked_string[i+1]=="//":
+
+        if character == "/" and i+1 < len(checked_string) and checked_string[i+1] == "/":
             input_turned_into_list.append("//")
-            i+=2
+            i += 2
             continue
+
         input_turned_into_list.append(character)
-        i+=1
-    if current_number!="":
+        i += 1
+
+    if current_number != "":
         input_turned_into_list.append(current_number)
+
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
@@ -110,15 +133,15 @@ def power(left,right):
         result=result*left
     return result
 
-def pass_power(tokens):
+def pass_power(expression_list):
     result = []
     i = 0
 
-    while i < len(tokens):
-        current_element = tokens[i]
+    while i < len(expression_list):
+        current_element = expression_list[i]
 
         if current_element == "^":
-            result[-1] = power(result[-1], tokens[i+1])
+            result[-1] = power(result[-1], expression_list[i+1])
             i += 2
             continue
 
@@ -127,27 +150,27 @@ def pass_power(tokens):
 
     return result
 
-def pass_mult_div(tokens):
+def pass_mult_div(expression_list):
     result = []
     i = 0
 
-    while i < len(tokens):
-        current_element = tokens[i]
+    while i < len(expression_list):
+        current_element = expression_list[i]
         match current_element:
             case "*":
-                result[-1] = multiply(result[-1], tokens[i+1])
+                result[-1] = multiply(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case "/":
-                result[-1] = divide(result[-1], tokens[i+1])
+                result[-1] = divide(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case "//":
-                result[-1] = divide_whole(result[-1], tokens[i+1])
+                result[-1] = divide_whole(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case "%":
-                result[-1] = modulo(result[-1], tokens[i+1])
+                result[-1] = modulo(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case _:
@@ -156,13 +179,13 @@ def pass_mult_div(tokens):
 
     return result
 
-def pass_add_sub(tokens):
-    result = float(tokens[0])
+def pass_add_sub(expression_list):
+    result = float(expression_list[0])
     i = 1
 
-    while i < len(tokens):
-        operator = tokens[i]
-        right = tokens[i+1]
+    while i < len(expression_list):
+        operator = expression_list[i]
+        right = expression_list[i+1]
 
         match operator:
             case "+":
@@ -174,10 +197,12 @@ def pass_add_sub(tokens):
 
     return result
 
-def calculate(tokens):
-    tokens = pass_power(tokens)
-    tokens = pass_mult_div(tokens)
-    return pass_add_sub(tokens)
+def calculate(expression_list):
+    expression_list = pass_power(expression_list)
+    print(f"la liste après évaluation des puissances : {expression_list}")
+    expression_list = pass_mult_div(expression_list)
+    print(f"la liste après évaluation des div/mult/modulo : {expression_list}")
+    return pass_add_sub(expression_list)
         
 def run_calculator():
     global history
