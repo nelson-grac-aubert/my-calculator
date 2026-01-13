@@ -97,6 +97,10 @@ def format_string(checked_string):
 
     if current_number != "":
         input_turned_into_list.append(current_number)
+    
+    if checked_string[-1] in "+-//*().%^" : 
+        print("\n Error : expression ends in an operator not followed by a number")
+        check_characters(allowed_characters)
 
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
@@ -128,9 +132,7 @@ def divide_whole(left, right):
 def power(left,right):
     left=float(left)
     right=int(float(right))
-    result=1
-    for i in range(right):
-        result=result*left
+    result = left ** right
     return result
 
 def pass_power(expression_list):
