@@ -3,6 +3,7 @@ running = True
 history = []
 
 def menu():
+    """ Prints main menu of the calculator, handles history """
     global history
 
     while True:
@@ -37,6 +38,7 @@ def menu():
             print("Invalid choice")
 
 def check_characters(allowed_characters):
+    """ Checks that the input string from user only has allowed characters """
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
@@ -52,6 +54,8 @@ def check_characters(allowed_characters):
             return user_input
 
 def previous_non_space_char(index, checked_string):
+        """ Returns the previous element of the formatted list 
+        Used to determine if a - is an operator or a negative number """
         previous_index = index - 1
         while previous_index >= 0 and checked_string[previous_index] == " ":
             previous_index -= 1
@@ -60,6 +64,8 @@ def previous_non_space_char(index, checked_string):
         return None
 
 def format_string(checked_string):
+    """ Transforms the user input string into a formated list of numbers and operators 
+    Calculate function will use that list to operate """
     input_turned_into_list = []
     current_number = ""
     i = 0
@@ -105,6 +111,7 @@ def format_string(checked_string):
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
+############################# OPERATIONS ####################################################
 def multiply(left, right):
     return float(left) * float(right)
 
@@ -134,8 +141,10 @@ def power(left,right):
     right=int(float(right))
     result = left ** right
     return result
+############################# OPERATIONS ####################################################
 
 def pass_power(expression_list):
+    """ Transforms the highest priority operations (powers and roots) into their result"""
     result = []
     i = 0
 
@@ -153,6 +162,7 @@ def pass_power(expression_list):
     return result
 
 def pass_mult_div(expression_list):
+    """ Transforms the high priority operations (div, mult, modulo) into their result"""
     result = []
     i = 0
 
@@ -182,6 +192,7 @@ def pass_mult_div(expression_list):
     return result
 
 def pass_add_sub(expression_list):
+    """ Transforms the low priority operations (add, sub) into their result"""
     result = float(expression_list[0])
     i = 1
 
@@ -200,6 +211,7 @@ def pass_add_sub(expression_list):
     return result
 
 def calculate(expression_list):
+    """ Calls the calculate functions by order of priority """
     expression_list = pass_power(expression_list)
     print(f"la liste après évaluation des puissances : {expression_list}")
     expression_list = pass_mult_div(expression_list)
@@ -207,6 +219,8 @@ def calculate(expression_list):
     return pass_add_sub(expression_list)
         
 def run_calculator():
+    """ Transforms the user input into result, and save both in history
+    by calling all the previously established functions """
     global history
     while running:
         checked_expression = check_characters(allowed_characters)
