@@ -1,4 +1,4 @@
-allowed_characters = '0123456789+-/*(). \n\r'
+allowed_characters = '0123456789+-//*().%^ \n\r'
 running = True 
 history = []
 
@@ -37,10 +37,6 @@ def menu():
             print("Invalid choice")
 
 def check_characters(allowed_characters):
-    """ Asks for user input 
-    If user input has non-allowed characters, displays error message and asks again 
-    Returns input string if correct """
-
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
@@ -48,31 +44,60 @@ def check_characters(allowed_characters):
         
         for character in user_input:
             if character not in allowed_characters:
-                print("Allowed characters are digits 0-9 and operators + - / * ()")
+                print("Allowed characters are digits 0-9 and operators + - / // * () % ^")
                 invalid_found = True
                 break 
 
         if not invalid_found:
             return user_input
 
-def format_string(checked_string) : 
-    """ Turns user input string into a list of numbers and operators """
+def format_string(checked_string):
     input_turned_into_list = []
     current_number = ""
+    i = 0
 
-    for character in checked_string : 
-        if character in "0123456789." : 
+    def previous_non_space_char(index):
+        j = index - 1
+        while j >= 0 and checked_string[j] == " ":
+            j -= 1
+        if j >= 0:
+            return checked_string[j]
+        return None
+
+    while i < len(checked_string):
+        character = checked_string[i]
+
+        if character == "-":
+            prev_char = previous_non_space_char(i)
+            if prev_char is None or prev_char in "+-*/%^(":
+                current_number = "-"
+                i += 1
+                continue
+
+        if character in "0123456789.":
             current_number += character
-        else:
-            if current_number != "":
-                input_turned_into_list.append(current_number)
-                current_number = ""
-            if character != " ":
-                input_turned_into_list.append(character)
+            i += 1
+            continue
+
+        if current_number != "":
+            input_turned_into_list.append(current_number)
+            current_number = ""
+
+        if character == " ":
+            i += 1
+            continue
+
+        if character == "/" and i+1 < len(checked_string) and checked_string[i+1] == "/":
+            input_turned_into_list.append("//")
+            i += 2
+            continue
+
+        input_turned_into_list.append(character)
+        i += 1
 
     if current_number != "":
-       input_turned_into_list.append(current_number)
-    
+        input_turned_into_list.append(current_number)
+
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
@@ -83,7 +108,7 @@ def divide(left, right):
     right = float(right)
     if right == 0:
         raise ZeroDivisionError("Division by 0 is not allowed")
-    return float(left) / right
+    return float(left) / (right)
 
 def add(left, right):
     return float(left) + float(right)
@@ -91,16 +116,102 @@ def add(left, right):
 def substract(left, right):
     return float(left) - float(right)
 
+def modulo(left,right):
+    return float(left) % float(right)
+
+def divide_whole(left, right):
+    right = float(right)
+    if right == 0:
+        raise ZeroDivisionError("Division by 0 is not allowed")
+    return float(left) // (right)
+
+def power(left,right):
+    left=float(left)
+    right=int(float(right))
+    result=1
+    for i in range(right):
+        result=result*left
+    return result
+
+def pass_power(expression_list):
+    result = []
+    i = 0
+
+    while i < len(expression_list):
+        current_element = expression_list[i]
+
+        if current_element == "^":
+            result[-1] = power(result[-1], expression_list[i+1])
+            i += 2
+            continue
+
+        result.append(current_element)
+        i += 1
+
+    return result
+
+def pass_mult_div(expression_list):
+    result = []
+    i = 0
+
+    while i < len(expression_list):
+        current_element = expression_list[i]
+        match current_element:
+            case "*":
+                result[-1] = multiply(result[-1], expression_list[i+1])
+                i += 2
+                continue
+            case "/":
+                result[-1] = divide(result[-1], expression_list[i+1])
+                i += 2
+                continue
+            case "//":
+                result[-1] = divide_whole(result[-1], expression_list[i+1])
+                i += 2
+                continue
+            case "%":
+                result[-1] = modulo(result[-1], expression_list[i+1])
+                i += 2
+                continue
+            case _:
+                result.append(current_element)
+                i += 1
+
+    return result
+
+def pass_add_sub(expression_list):
+    result = float(expression_list[0])
+    i = 1
+
+    while i < len(expression_list):
+        operator = expression_list[i]
+        right = expression_list[i+1]
+
+        match operator:
+            case "+":
+                result = add(result, right)
+            case "-":
+                result = substract(result, right)
+
+        i += 2
+
+    return result
+
+def calculate(expression_list):
+    expression_list = pass_power(expression_list)
+    print(f"la liste après évaluation des puissances : {expression_list}")
+    expression_list = pass_mult_div(expression_list)
+    print(f"la liste après évaluation des div/mult/modulo : {expression_list}")
+    return pass_add_sub(expression_list)
+        
 def run_calculator():
+    global history
     while running:
         checked_expression = check_characters(allowed_characters)
         expression_list = format_string(checked_expression)
 
-        # dans le try on aura result = calculate(expression_list)
-        # calculate() etant la fonction qui va gerer l'ordre des priorités et les parenthèses
-
         try:
-            result = "ici le résultat quand on aura la fonction pour le calculer"
+            result = calculate(expression_list)
             print(f"\nResult: {result}\n")
 
             history.append(f"{checked_expression} = {result}")
@@ -112,12 +223,5 @@ def run_calculator():
             print("Division by 0 is not allowed. Please enter a new expression.\n")
             continue
 
-
-if __name__ == "__main__" : 
-
+if __name__ == "__main__" :
     menu()
-
-    
-        
-
-
