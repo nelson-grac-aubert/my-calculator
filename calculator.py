@@ -114,31 +114,6 @@ def power(left,right):
         result=result*left
     return result
 
-# def calculate(formated_list) : 
-#     for i in range(len(formated_list)) : 
-#         if formated_list[i] == "/" : 
-#             left = formated_list[i-1] 
-#             right = formated_list[i+1]
-#             result = divide(left, right)
-
-#         if formated_list[i] == "*" : 
-#             left = formated_list[i-1] 
-#             right = formated_list[i+1]
-#             result = multiply(left, right)
-    
-#         if formated_list[i] == "+" : 
-#             left = formated_list[i-1] 
-#             right = formated_list[i+1]
-#             result = add(left, right)
-    
-#         if formated_list[i] == "-" : 
-#             left = formated_list[i-1] 
-#             right = formated_list[i+1]
-#             result = substract(left, right)
-
-
-    # return result
-
 def calculate(formated_list):
     list_without_power=[]
     i=0
