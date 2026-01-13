@@ -1,4 +1,4 @@
-allowed_characters = '0123456789+-/*().% \n\r'
+allowed_characters = '0123456789+-/*().%^ \n\r'
 running = True 
 history = []
 
@@ -55,24 +55,30 @@ def check_characters(allowed_characters):
         if not invalid_found:
             return user_input
 
-def format_string(checked_string) : 
-    """ Turns user input string into a list of numbers and operators """
-    input_turned_into_list = []
-    current_number = ""
-
-    for character in checked_string : 
-        if character in "0123456789." : 
-            current_number += character
-        else:
-            if current_number != "":
-                input_turned_into_list.append(current_number)
-                current_number = ""
-            if character != " ":
-                input_turned_into_list.append(character)
-
-    if current_number != "":
-       input_turned_into_list.append(current_number)
-    
+def format_string(checked_string):
+    input_turned_into_list=[]
+    current_number=""
+    i=0
+    while i<len(checked_string):
+        character=checked_string[i]
+        if character in "0123456789.":
+            current_number+=character
+            i+=1
+            continue
+        if current_number!="":
+            input_turned_into_list.append(current_number)
+            current_number=""
+        if character==" ":
+            i+=1
+            continue
+        if character=="/" and i+1<len(checked_string) and checked_string[i+1]=="/":
+            input_turned_into_list.append("//")
+            i+=2
+            continue
+        input_turned_into_list.append(character)
+        i+=1
+    if current_number!="":
+        input_turned_into_list.append(current_number)
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
@@ -100,6 +106,14 @@ def divide_whole(left, right):
         raise ZeroDivisionError("Division by 0 is not allowed")
     return float(left) // (right)
 
+def power(left,right):
+    left=float(left)
+    right=int(float(right))
+    result=1
+    for i in range(right):
+        result=result*left
+    return result
+
 # def calculate(formated_list) : 
 #     for i in range(len(formated_list)) : 
 #         if formated_list[i] == "/" : 
@@ -125,12 +139,56 @@ def divide_whole(left, right):
 
     # return result
 
-def calculate(formated_list) : 
-    # d'abord on fait une nouvelle liste où les multiplications et les divisiosn sont evaluées
-    list_without_div_mult = []
-    for i in range(len(formated_list)) : 
-        if 
-
+def calculate(formated_list):
+    list_without_power=[]
+    i=0
+    while i<len(formated_list):
+        token=formated_list[i]
+        match token:
+            case "^":
+                list_without_power[-1]=power(list_without_power[-1],formated_list[i+1])
+                i+=2
+                continue
+            case _:
+                list_without_power.append(token)
+                i+=1
+    list_without_div_mult=[]
+    i=0
+    while i<len(list_without_power):
+        token=list_without_power[i]
+        match token:
+            case "*":
+                list_without_div_mult[-1]=multiply(list_without_div_mult[-1],list_without_power[i+1])
+                i+=2
+                continue
+            case "/":
+                list_without_div_mult[-1]=divide(list_without_div_mult[-1],list_without_power[i+1])
+                i+=2
+                continue
+            case "//":
+                list_without_div_mult[-1]=divide_whole(list_without_div_mult[-1],list_without_power[i+1])
+                i+=2
+                continue
+            case "%":
+                list_without_div_mult[-1]=modulo(list_without_div_mult[-1],list_without_power[i+1])
+                i+=2
+                continue
+            case _:
+                list_without_div_mult.append(token)
+                i+=1
+    result=float(list_without_div_mult[0])
+    i=1
+    while i<len(list_without_div_mult):
+        op=list_without_div_mult[i]
+        right=list_without_div_mult[i+1]
+        match op:
+            case "+":
+                result=add(result,right)
+            case "-":
+                result=substract(result,right)
+        i+=2
+    return result
+        
 def run_calculator():
     global history
     while running:
