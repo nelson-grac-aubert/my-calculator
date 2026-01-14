@@ -37,21 +37,37 @@ def menu():
         else:
             print("Invalid choice")
 
-def check_characters(allowed_characters):
-    """ Checks that the input string from user only has allowed characters """
+def validate_string(allowed_characters):
+    """ Gets user input and handles first set of error in the string"""
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
-        invalid_found = False
-        
-        for character in user_input:
-            if character not in allowed_characters:
-                print("Allowed characters are digits 0-9 and operators . + - / // * () % ^")
-                invalid_found = True
-                break 
+        if user_input == "":
+            print("Error: expression is empty.")
+            continue
 
-        if not invalid_found:
-            return user_input
+        invalid = False
+        for ch in user_input:
+            if ch not in allowed_characters:
+                print("Error: invalid character.")
+                invalid = True
+                break
+        if invalid:
+            continue
+
+        last_non_space = None
+        for ch in reversed(user_input):
+            if ch not in " \n\r":
+                last_non_space = ch
+                break
+        if last_non_space is None:
+            print("Error: expression is empty.")
+            continue
+        if last_non_space in "+-*/%^.(":
+            print("Error: expression cannot end with an operator.")
+            continue
+
+        return user_input
 
 def previous_non_space_char(index, checked_string):
     """ Returns the previous element of the formatted list 
@@ -265,7 +281,7 @@ def run_calculator():
     by calling all the previously established functions """
     global history
     while running:
-        checked_expression = check_characters(allowed_characters)
+        checked_expression = validate_string(allowed_characters)
         expression_list = format_string(checked_expression)
 
         try:
