@@ -38,18 +38,18 @@ def menu():
             print("Invalid choice")
 
 def validate_string(allowed_characters):
-    """ Gets user input and handles first set of error in the string"""
+    """ Gets user input and handles first set of error in the string """
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
         if user_input == "":
-            print("Error: expression is empty.")
+            print("\nError: expression is empty.")
             continue
 
         invalid = False
         for ch in user_input:
             if ch not in allowed_characters:
-                print("Error: invalid character.")
+                print("\nError: invalid character.")
                 invalid = True
                 break
         if invalid:
@@ -61,10 +61,10 @@ def validate_string(allowed_characters):
                 last_non_space = ch
                 break
         if last_non_space is None:
-            print("Error: expression is empty.")
+            print("\nError: expression is empty.")
             continue
         if last_non_space in "+-*/%^.(":
-            print("Error: expression cannot end with an operator.")
+            print("\nError: expression cannot end with an operator.")
             continue
 
         return user_input
@@ -91,7 +91,7 @@ def format_string(checked_string):
 
         if character == "-":
             prev_char = previous_non_space_char(i, checked_string)
-            if prev_char is None or prev_char in "+-*/%^(":
+            if prev_char is None or prev_char in "+-*//%^(":
                 current_number = "-"
                 i += 1
                 continue
@@ -122,6 +122,46 @@ def format_string(checked_string):
 
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
+
+def validate_list(formated_list):
+    """ Gets formated list and checks for structural errors """
+
+    operators = {"+", "-", "*", "/", "//", "%", "^"}
+
+    if formated_list[0] in operators - {"-"}:
+        print(f"\nError: expression cannot start with this operator : {formated_list[0]}")
+        return False
+
+    if formated_list[-1] in operators:
+        print("\nError: expression cannot end with an operator.")
+        return False
+
+    for i in range(len(formated_list) - 1):
+        a, b = formated_list[i], formated_list[i+1]
+
+        # Removes decimal point, removes negative -, turns into True if it's a number
+        if a.replace('.', '').lstrip('-').isdigit() and \
+           b.replace('.', '').lstrip('-').isdigit():
+            print("\nError: missing operator between numbers.")
+            return False
+
+        if a in operators and b in operators:
+            print("\nError: two operators in a row.")
+            return False
+
+        if a == "(" and b == ")":
+            print("\nError: empty parentheses.")
+            return False
+
+        if a == "(" and b in operators - {"-"}:
+            print("\nError: operator after '('.")
+            return False
+
+        if a in operators and b == ")":
+            print("\nError: operator before ')'.")
+            return False
+    
+    return True
 
 ############################# OPERATIONS ####################################################
 def multiply(left, right):
@@ -194,7 +234,7 @@ def resolve_parenthesis(expression_list) :
         + [str(replacement)]
         + expression_list[closing_parenthesis_index + 1:])
 
-    print(f"Liste avec un niveau de parenthèses en moins : {expression_list}")
+    print(expression_list)
     return expression_list
 
 def pass_power(expression_list):
@@ -267,9 +307,9 @@ def pass_add_sub(expression_list):
 def calculate(expression_list):
     """ Calls the calculate functions by order of priority """
     expression_list = pass_power(expression_list)
-    print(f"la liste après évaluation des puissances : {expression_list}")
+    print(expression_list)
     expression_list = pass_mult_div(expression_list)
-    print(f"la liste après évaluation des div/mult/modulo : {expression_list}")
+    print(expression_list)
     return pass_add_sub(expression_list)
         
 def run_calculator():
@@ -279,6 +319,9 @@ def run_calculator():
     while running:
         checked_expression = validate_string(allowed_characters)
         expression_list = format_string(checked_expression)
+        
+        if validate_list(expression_list) == False : 
+            continue
 
         try:
             expression_list = resolve_parenthesis(expression_list)
@@ -297,112 +340,4 @@ def run_calculator():
 if __name__ == "__main__" :
     menu()
 
-
- ####################################################################TKINTER#########################################################################
-
-from tkinter import*
-import calculator
-
-win=Tk()
-win.title("Calculator")
-win.geometry('560x580')
-win.configure(background='grey')
-
-def  btnclick(num):
-    global operator
-    operator=operator + str(num)
-    _input.set(operator)
-
-def clear():
-    global operator
-    operator=""
-    _input.set("")
-
-def answer():
-    global operator
-    ans=str(operator)
-    _input (calculator.calculate(ans))
-    operator = ""
-
-label=Label(win,font=('ariel' ,20,'bold'),text='Calculator',bg='grey',fg='black')
-label.grid(columnspan=4)
-
-_input=StringVar()
-operator=""
-
-display = Entry(win,font=('ariel' ,30,'bold'), textvariable=_input ,insertwidth=10 , bd=10 ,bg="white",justify='right')
-display.grid(columnspan=4)
-
-
-b7=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="7",bg="grey", command=lambda: btnclick(7) )
-b7.grid(row=2,column=0)
-
-b8=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="8",bg="grey", command=lambda: btnclick(8) )
-b8.grid(row=2,column=1)
-
-b9=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="9",bg="grey", command=lambda: btnclick(9) )
-b9.grid(row=2,column=2)
-
-Add=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 18 ,'bold'),text="+",bg="grey", command=lambda: btnclick("+") )
-Add.grid(row=2,column=3)
-
-
-b4=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="4",bg="grey", command=lambda: btnclick(4) )
-b4.grid(row=3,column=0)
-
-b5=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="5",bg="grey", command=lambda: btnclick(5) )
-b5.grid(row=3,column=1)
-
-b6=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="6",bg="grey", command=lambda: btnclick(6) )
-b6.grid(row=3,column=2)
-
-Sub=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="-",bg="grey", command=lambda: btnclick("-") )
-Sub.grid(row=3,column=3)
-
-
-b1=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="1",bg="grey", command=lambda: btnclick(1) )
-b1.grid(row=4,column=0)
-
-b2=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="2",bg="grey", command=lambda: btnclick(2) )
-b2.grid(row=4,column=1)
-
-b3=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="3",bg="grey", command=lambda: btnclick(3) )
-b3.grid(row=4,column=2)
-
-mul=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="*",bg="grey", command=lambda: btnclick("*") )
-mul.grid(row=4,column=3)
-
-
-b0=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 22 ,'bold'),text="0",bg="grey", command=lambda: btnclick(0) )
-b0.grid(row=5,column=0)
-
-bc=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 22 ,'bold'),text="c",bg="grey", command=clear)
-bc.grid(row=5,column=1)
-
-Decimal=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 24 ,'bold'),text=".",bg="grey", command=lambda: btnclick(".") )
-Decimal.grid(row=5,column=2)
-
-Div=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 23 ,'bold'),text="/",bg="grey", command=lambda: btnclick("/") )
-Div.grid(row=5,column=3)
-
-
-bequal=Button(win,padx=14,pady=16,bd=5,width = 33, fg="black", font=('ariel', 16 ,'bold'),text="=",bg="grey",command=answer)
-bequal.grid(columnspan=4)
-
-Parenthèse_g =Button(win,padx=18,pady=16,bd=4, fg="black", font=('ariel', 21 ,'bold'),text="(",bg="grey", command=lambda: btnclick("(") )
-Parenthèse_g.grid(row=5,column=5)
-
-Parenthèse_d =Button(win,padx=18,pady=16,bd=4, fg="black", font=('ariel', 21 ,'bold'),text=")",bg="grey", command=lambda: btnclick(")") )
-Parenthèse_d.grid(row=4,column=5)
-
-Pourcentage =Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 18 ,'bold'),text="%",bg="grey", command=lambda: btnclick("%") )
-Pourcentage.grid(row=3,column=5)
-
-Puissance =Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="^",bg="grey", command=lambda: btnclick("^") )
-Puissance.grid(row=2,column=5)
-
-Div_d =Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="//",bg="grey", command=lambda: btnclick("//") )
-Div_d.grid(row=1,column=5)
-
-
-win.mainloop()   
+   
