@@ -91,7 +91,7 @@ def format_string(checked_string):
 
         if character == "-":
             prev_char = previous_non_space_char(i, checked_string)
-            if prev_char is None or prev_char in "+-*/%^(":
+            if prev_char is None or prev_char in "+-*//%^(":
                 current_number = "-"
                 i += 1
                 continue
@@ -139,8 +139,9 @@ def validate_list(formated_list):
     for i in range(len(formated_list) - 1):
         a, b = formated_list[i], formated_list[i+1]
 
-        if a.replace('.', '', 1).lstrip('-').isdigit() and \
-           b.replace('.', '', 1).lstrip('-').isdigit():
+        # Removes decimal point, removes negative -, turns into True if it's a number
+        if a.replace('.', '').lstrip('-').isdigit() and \
+           b.replace('.', '').lstrip('-').isdigit():
             print("\nError: missing operator between numbers.")
             return False
 
