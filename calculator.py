@@ -38,18 +38,18 @@ def menu():
             print("Invalid choice")
 
 def validate_string(allowed_characters):
-    """ Gets user input and handles first set of error in the string"""
+    """ Gets user input and handles first set of error in the string """
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
         if user_input == "":
-            print("Error: expression is empty.")
+            print("\nError: expression is empty.")
             continue
 
         invalid = False
         for ch in user_input:
             if ch not in allowed_characters:
-                print("Error: invalid character.")
+                print("\nError: invalid character.")
                 invalid = True
                 break
         if invalid:
@@ -61,10 +61,10 @@ def validate_string(allowed_characters):
                 last_non_space = ch
                 break
         if last_non_space is None:
-            print("Error: expression is empty.")
+            print("\nError: expression is empty.")
             continue
         if last_non_space in "+-*/%^.(":
-            print("Error: expression cannot end with an operator.")
+            print("\nError: expression cannot end with an operator.")
             continue
 
         return user_input
@@ -122,6 +122,45 @@ def format_string(checked_string):
 
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
+
+def validate_list(formated_list):
+    """ Gets formated list and checks for structural errors """
+
+    operators = {"+", "-", "*", "/", "//", "%", "^"}
+
+    if formated_list[0] in operators - {"-"}:
+        print(f"\nError: expression cannot start with this operator : {formated_list[0]}")
+        return False
+
+    if formated_list[-1] in operators:
+        print("\nError: expression cannot end with an operator.")
+        return False
+
+    for i in range(len(formated_list) - 1):
+        a, b = formated_list[i], formated_list[i+1]
+
+        if a.replace('.', '', 1).lstrip('-').isdigit() and \
+           b.replace('.', '', 1).lstrip('-').isdigit():
+            print("\nError: missing operator between numbers.")
+            return False
+
+        if a in operators and b in operators:
+            print("\nError: two operators in a row.")
+            return False
+
+        if a == "(" and b == ")":
+            print("\nError: empty parentheses.")
+            return False
+
+        if a == "(" and b in operators - {"-"}:
+            print("\nError: operator after '('.")
+            return False
+
+        if a in operators and b == ")":
+            print("\nError: operator before ')'.")
+            return False
+    
+    return True
 
 ############################# OPERATIONS ####################################################
 def multiply(left, right):
@@ -194,7 +233,7 @@ def resolve_parenthesis(expression_list) :
         + [str(replacement)]
         + expression_list[closing_parenthesis_index + 1:])
 
-    print(f"Liste avec un niveau de parenthèses en moins : {expression_list}")
+    print(expression_list)
     return expression_list
 
 def pass_power(expression_list):
@@ -267,9 +306,9 @@ def pass_add_sub(expression_list):
 def calculate(expression_list):
     """ Calls the calculate functions by order of priority """
     expression_list = pass_power(expression_list)
-    print(f"la liste après évaluation des puissances : {expression_list}")
+    print(expression_list)
     expression_list = pass_mult_div(expression_list)
-    print(f"la liste après évaluation des div/mult/modulo : {expression_list}")
+    print(expression_list)
     return pass_add_sub(expression_list)
         
 def run_calculator():
@@ -279,6 +318,9 @@ def run_calculator():
     while running:
         checked_expression = validate_string(allowed_characters)
         expression_list = format_string(checked_expression)
+        
+        if validate_list(expression_list) == False : 
+            continue
 
         try:
             expression_list = resolve_parenthesis(expression_list)
@@ -296,3 +338,5 @@ def run_calculator():
 
 if __name__ == "__main__" :
     menu()
+
+   
