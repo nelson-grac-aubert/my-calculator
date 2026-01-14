@@ -56,7 +56,7 @@ def validate_string(allowed_characters):
             continue
 
         last_non_space = None
-        for ch in reversed(user_input):
+        for ch in user_input[::-1]:
             if ch not in " \n\r":
                 last_non_space = ch
                 break
@@ -85,10 +85,6 @@ def format_string(checked_string):
     input_turned_into_list = []
     current_number = ""
     i = 0
-
-    if checked_string[-1] in "+-//*().%^" : 
-        print("\nError : expression ends in an operator not followed by a number")
-        check_characters(allowed_characters)
 
     while i < len(checked_string):
         character = checked_string[i]
