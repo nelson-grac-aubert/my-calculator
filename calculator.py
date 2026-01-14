@@ -1,11 +1,10 @@
+import json_management
+
 allowed_characters = '0123456789+-//*().%^ \n\r'
 running = True 
-history = []
+history = json_management.load_history()
 
 def menu():
-    """ Prints main menu of the calculator, handles history """
-    global history
-
     while True:
         print("\n--- CALCULATOR ---")
         print("1 - New calculation")
@@ -23,11 +22,12 @@ def menu():
                 print("History is empty.")
             else:
                 print("\n--- History ---")
-                for h in history:
-                    print(h)
+                for i, h in enumerate(history, 1):
+                    print(f"{i}. {h['expression']} = {h['result']}")
 
         elif choice == "3":
             history.clear()
+            json_management.save_history(history)
             print("History cleared.")
 
         elif choice == "4":
@@ -328,7 +328,8 @@ def run_calculator():
             result = calculate(expression_list)
             print(f"\nResult: {result}\n")
 
-            history.append(f"{checked_expression} = {result}")
+            history.append({"expression": checked_expression, "result": result})
+            json_management.save_history(history)
 
             input("Press Enter to continue...")
             return
