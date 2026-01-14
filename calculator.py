@@ -143,6 +143,48 @@ def power(left,right):
     return result
 ############################# OPERATIONS ####################################################
 
+def find_matching_open(expression_list, closing_index):
+    """ Finds the index of the opening parenthesis that matches the closing one at closing_index"""
+    counter = 0
+
+    i = closing_index
+
+    while i >= 0:
+        element = expression_list[i]
+        if element == ")":
+            counter += 1
+        elif element == "(":
+            counter -= 1
+            if counter == 0:
+                return i
+        i -= 1
+
+    # If we exit the loop without finding "(" : there is a parenthesis syntax error
+    return None
+
+def resolve_parenthesis(expression_list) : 
+    """ Detects the parenthesis and resolve them in the right order by calling calculate()
+    on them, and then replacing them one by one until none is left """
+
+    while ")" in expression_list : 
+        for i in range(len(expression_list)) : 
+            if expression_list[i] == ")" : 
+                closing_parenthesis_index = i 
+                break
+        
+        opening_parenthesis_index = find_matching_open(expression_list, closing_parenthesis_index)
+
+        inside_parenthesis = expression_list[opening_parenthesis_index + 1 : closing_parenthesis_index]
+
+        replacement = calculate(inside_parenthesis)
+
+        expression_list = (expression_list[:opening_parenthesis_index]
+        + [str(replacement)]
+        + expression_list[closing_parenthesis_index + 1:])
+
+    print(f"Liste avec un niveau de parenthèses en moins : {expression_list}")
+    return expression_list
+
 def pass_power(expression_list):
     """ Transforms the highest priority operations (powers and roots) into their result"""
     result = []
@@ -227,6 +269,7 @@ def run_calculator():
         expression_list = format_string(checked_expression)
 
         try:
+            expression_list = resolve_parenthesis(expression_list)
             result = calculate(expression_list)
             print(f"\nResult: {result}\n")
 
