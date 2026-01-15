@@ -34,6 +34,8 @@ def answer():
         operator = ""
     except ZeroDivisionError:
         calculator.display_error("Error: division by 0 is not allowed.")
+    except OverflowError:
+        calculator.display_error("\nError : overflow, try smaller")
 
 label=Label(win,font=('ariel' ,20,'bold'),text='Calculator',bg='grey',fg='black')
 label.grid(columnspan=4)
