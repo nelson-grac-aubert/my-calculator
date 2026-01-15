@@ -19,8 +19,9 @@ def clear():
 
 def answer():
     global operator
-    ans=str(operator)
-    _input (calculator.calculate(ans))
+    ans = calculator.format_string(operator)
+    ans = calculator.resolve_parenthesis(ans)
+    _input.set(calculator.calculate(ans))
     operator = ""
 
 label=Label(win,font=('ariel' ,20,'bold'),text='Calculator',bg='grey',fg='black')
