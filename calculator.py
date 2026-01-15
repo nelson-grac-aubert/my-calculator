@@ -123,6 +123,20 @@ def format_string(checked_string):
     print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
+def is_valid_number(element):
+    """Returns True if element is a valid decimal number."""
+    # Handles negative numbers
+    if element.startswith('-'):
+        element = element[1:]
+    # Empty numbers
+    if element == "" or element == ".":
+        return False
+    # Too many decimal dots in one number
+    if element.count('.') > 1:
+        return False
+    # Final check: all remaining chars must be digits
+    return element.replace('.', '').isdigit()
+
 def validate_list(formated_list):
     """ Gets formated list and checks for structural errors """
 
@@ -139,12 +153,6 @@ def validate_list(formated_list):
     for i in range(len(formated_list) - 1):
         a, b = formated_list[i], formated_list[i+1]
 
-        # Removes decimal point, removes negative -, turns into True if it's a number
-        if a.replace('.', '').lstrip('-').isdigit() and \
-           b.replace('.', '').lstrip('-').isdigit():
-            print("\nError: missing operator between numbers.")
-            return False
-
         if a in operators and b in operators:
             print("\nError: two operators in a row.")
             return False
@@ -158,7 +166,18 @@ def validate_list(formated_list):
             return False
 
         if a in operators and b == ")":
-            print("\nError: operator before ')'.")
+            print("\nError: operator before ')'")
+            return False
+        
+        if is_valid_number(a) and is_valid_number(b):
+            print("\nError: missing operator between numbers.")
+            return False
+
+        if a not in operators and not is_valid_number(a):
+            print(f"\nError: invalid number: {a}")
+            return False
+        if b not in operators and not is_valid_number(b):
+            print(f"\nError: invalid number: {b}")
             return False
     
     return True
