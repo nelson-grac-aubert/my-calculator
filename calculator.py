@@ -232,8 +232,9 @@ def divide_whole(left, right):
     return float(left) // (right)
 
 def power(left,right):
-    result = float(left) ** float(right)
-    return result
+    
+    return float(left) ** float(right)
+
 ############################# OPERATIONS ####################################################
 
 def find_matching_open(expression_list, closing_index):
@@ -364,6 +365,8 @@ def run_calculator():
         try:
             expression_list = resolve_parenthesis(expression_list)
             result = calculate(expression_list)
+            if result == 0:
+                result = 0
             print(f"\nResult: {result}\n")
 
             history.append({"expression": checked_expression, "result": result})
@@ -374,6 +377,9 @@ def run_calculator():
 
         except ZeroDivisionError:
             display_error("\nError : division by 0 is not allowed.")
+            continue
+        except OverflowError:
+            display_error("\nError : overflow, try smaller")
             continue
 
 if __name__ == "__main__" :
