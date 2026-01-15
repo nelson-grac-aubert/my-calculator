@@ -2,6 +2,7 @@ from tkinter import *
 import calculator
 import json_management
 
+calculator.USE_GUI = True
 history = json_management.load_history()
 
 win=Tk()
@@ -22,9 +23,22 @@ def clear():
 
 def answer():
     global operator
-    ans=str(operator)
-    _input (calculator.calculate(ans))
-    operator = ""
+
+    expr = operator
+    lst = calculator.format_string(expr)
+
+    if not calculator.validate_list(lst):
+        return  # L’erreur a déjà été affichée par display_error()
+
+    try:
+        lst = calculator.resolve_parenthesis(lst)
+        result = calculator.calculate(lst)
+        _input.set(result)
+        operator = ""
+    except ZeroDivisionError:
+        calculator.display_error("Error: division by 0 is not allowed.")
+    except OverflowError:
+        calculator.display_error("\nError : overflow, try smaller")
 
     
 def clear_history():
