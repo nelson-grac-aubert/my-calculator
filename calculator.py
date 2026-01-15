@@ -1,8 +1,15 @@
 import json_management
+from tkinter import messagebox
 
 allowed_characters = '0123456789+-//*().%^ \n\r'
 running = True 
 history = json_management.load_history()
+
+def display_error(msg):
+    if USE_GUI:
+        messagebox.showerror("Error", msg)
+    else:
+        print(msg)
 
 def menu():
     while True:
@@ -19,7 +26,7 @@ def menu():
 
         elif choice == "2":
             if not history:
-                print("History is empty.")
+                display_error("History is empty.")
             else:
                 print("\n--- History ---")
                 for i, h in enumerate(history, 1):
@@ -43,13 +50,13 @@ def validate_string(allowed_characters):
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
 
         if user_input == "":
-            print("\nError: expression is empty.")
+            display_error("\nError: expression is empty.")
             continue
 
         invalid = False
         for ch in user_input:
             if ch not in allowed_characters:
-                print("\nError: invalid character.")
+                display_error("\nError: invalid character.")
                 invalid = True
                 break
         if invalid:
@@ -61,10 +68,10 @@ def validate_string(allowed_characters):
                 last_non_space = ch
                 break
         if last_non_space is None:
-            print("\nError: expression is empty.")
+            display_error("\nError: expression is empty.")
             continue
         if last_non_space in "+-*/%^.(":
-            print("\nError: expression cannot end with an operator.")
+            display_error("\nError: expression cannot end with an operator.")
             continue
 
         return user_input
@@ -149,52 +156,52 @@ def validate_list(formated_list):
         elif element == ")":
             balance -= 1
     if balance != 0:
-        print("\nError: parentheses are not balanced.")
+        display_error("\nError: parentheses are not balanced.")
         return False
     
     if formated_list[0] in operators - {"-"}:
-        print(f"\nError: expression cannot start with this operator : {formated_list[0]}")
+        display_error(f"\nError: expression cannot start with this operator : {formated_list[0]}")
         return False
 
     if formated_list[-1] in operators:
-        print("\nError: expression cannot end with an operator.")
+        display_error("\nError: expression cannot end with an operator.")
         return False
 
     for i in range(len(formated_list) - 1):
         a, b = formated_list[i], formated_list[i+1]
 
         if a in operators and b in operators:
-            print("\nError: two operators in a row.")
+            display_error("\nError: two operators in a row.")
             return False
 
         if a == "(" and b == ")":
-            print("\nError: empty parentheses.")
+            display_error("\nError: empty parentheses.")
             return False
 
         if a == "(" and b in operators - {"-"}:
-            print("\nError: operator after '('.")
+            display_error("\nError: operator after '('.")
             return False
 
         if a in operators and b == ")":
-            print("\nError: operator before ')'")
+            display_error("\nError: operator before ')'")
             return False
         
         if is_valid_number(a) and is_valid_number(b):
-            print("\nError: missing operator between numbers.")
+            display_error("\nError: missing operator between numbers.")
             return False
 
         if a not in operators and a not in ["(", ")"] and not is_valid_number(a):
-            print(f"\nError: invalid number: {a}")
+            display_error(f"\nError: invalid number: {a}")
             return False
         if b not in operators and b not in ["(", ")"] and not is_valid_number(b):
-            print(f"\nError: invalid number: {b}")
+            display_error(f"\nError: invalid number: {b}")
             return False
         
         if is_valid_number(a) and b == "(":
-            print("\nError: missing operator before '('.")
+            display_error("\nError: missing operator before '('.")
             return False
         if a == ")" and is_valid_number(b):
-            print("\nError: missing operator after ')'.")
+            display_error("\nError: missing operator after ')'.")
             return False
 
     return True
@@ -225,10 +232,9 @@ def divide_whole(left, right):
     return float(left) // (right)
 
 def power(left,right):
-    left=float(left)
-    right=int(float(right))
-    result = left ** right
-    return result
+    
+    return float(left) ** float(right)
+
 ############################# OPERATIONS ####################################################
 
 def find_matching_open(expression_list, closing_index):
@@ -359,6 +365,8 @@ def run_calculator():
         try:
             expression_list = resolve_parenthesis(expression_list)
             result = calculate(expression_list)
+            if result == 0:
+                result = 0
             print(f"\nResult: {result}\n")
 
             history.append({"expression": checked_expression, "result": result})
@@ -368,11 +376,15 @@ def run_calculator():
             return
 
         except ZeroDivisionError:
-            print("\nError : division by 0 is not allowed.")
+            display_error("\nError : division by 0 is not allowed.")
+            continue
+        except OverflowError:
+            display_error("\nError : overflow, try smaller")
             continue
 
 if __name__ == "__main__" :
 
+    USE_GUI = False
     menu()
 
    
