@@ -9,6 +9,7 @@ win.title("Calculator")
 win.geometry('570x650')
 win.configure(background='grey')
 
+
 def  btnclick(num):
     global operator
     operator=operator + str(num)
@@ -24,6 +25,29 @@ def answer():
     ans=str(operator)
     _input (calculator.calculate(ans))
     operator = ""
+
+    
+def clear_history():
+    history.clear()
+    json_management.save_history(history)
+
+    
+def view_history_window():
+    history_window = Toplevel(win)
+    history_window.title("Calculation History")
+    history_window.geometry("400x400")
+    history_window.configure(background='lightgrey')
+
+    label = Label(history_window, text="History", font=('ariel', 18, 'bold'), bg='lightgrey')
+    label.pack(pady=10)
+
+    history_text = Text(history_window, font=('ariel', 14), bg='white', wrap=WORD)
+    history_text.pack(expand=True, fill=BOTH, padx=10, pady=10)
+
+    for item in history:
+        history_text.insert(END, item + "\n")
+
+    history_text.config(state=DISABLED)
 
 label=Label(win,font=('ariel' ,20,'bold'),text='Calculator',bg='grey',fg='black')
 label.grid(columnspan=4)
@@ -104,11 +128,15 @@ Puissance.grid(row=2,column=5)
 Div_d =Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="//",bg="grey", command=lambda: btnclick("//") )
 Div_d.grid(row=1,column=5)
 
-View_h=Button(win,padx=1,pady=5,bd=5,width = 20, fg="black", font=('ariel', 16 ,'bold'),text="View History",bg="grey",command=history)
+View_h=Button(win,padx=1,pady=5,bd=5,width = 20, fg="black", font=('ariel', 16 ,'bold'),text="View History",bg="grey",command=view_history_window)
 View_h.grid(column=2, columnspan=5)
 
-Clear_h=Button(win,padx=1,pady=5,bd=5,width = 20, fg="black", font=('ariel', 16 ,'bold'),text="Clear History",bg="grey",command=history.clear)
+Clear_h=Button(win,padx=1,pady=5,bd=5,width = 20, fg="black", font=('ariel', 16 ,'bold'),text="Clear History",bg="grey",command=clear_history)
 Clear_h.grid(row=7, columnspan=2)
 
 
 win.mainloop()
+
+
+
+
