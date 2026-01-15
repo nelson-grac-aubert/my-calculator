@@ -35,7 +35,7 @@ def menu():
             break
 
         else:
-            print("Invalid choice")
+            print("\nInvalid choice")
 
 def validate_string(allowed_characters):
     """ Gets user input and handles first set of error in the string """
@@ -120,7 +120,6 @@ def format_string(checked_string):
     if current_number != "":
         input_turned_into_list.append(current_number)
 
-    print(f"\nLa liste formatée sur laquelle on va faire les opérations : {input_turned_into_list}")
     return input_turned_into_list
 
 def is_valid_number(element):
@@ -141,7 +140,18 @@ def validate_list(formated_list):
     """ Gets formated list and checks for structural errors """
 
     operators = {"+", "-", "*", "/", "//", "%", "^"}
-
+    
+    # Check parentheses balance
+    balance = 0
+    for element in formated_list:
+        if element == "(":
+            balance += 1
+        elif element == ")":
+            balance -= 1
+    if balance != 0:
+        print("\nError: parentheses are not balanced.")
+        return False
+    
     if formated_list[0] in operators - {"-"}:
         print(f"\nError: expression cannot start with this operator : {formated_list[0]}")
         return False
@@ -173,13 +183,13 @@ def validate_list(formated_list):
             print("\nError: missing operator between numbers.")
             return False
 
-        if a not in operators and not is_valid_number(a):
+        if a not in operators and a not in ["(", ")"] and not is_valid_number(a):
             print(f"\nError: invalid number: {a}")
             return False
-        if b not in operators and not is_valid_number(b):
+        if b not in operators and b not in ["(", ")"] and not is_valid_number(b):
             print(f"\nError: invalid number: {b}")
             return False
-    
+
     return True
 
 ############################# OPERATIONS ####################################################
@@ -253,7 +263,6 @@ def resolve_parenthesis(expression_list) :
         + [str(replacement)]
         + expression_list[closing_parenthesis_index + 1:])
 
-    print(expression_list)
     return expression_list
 
 def pass_power(expression_list):
@@ -326,9 +335,7 @@ def pass_add_sub(expression_list):
 def calculate(expression_list):
     """ Calls the calculate functions by order of priority """
     expression_list = pass_power(expression_list)
-    print(expression_list)
     expression_list = pass_mult_div(expression_list)
-    print(expression_list)
     return pass_add_sub(expression_list)
         
 def run_calculator():
@@ -354,10 +361,11 @@ def run_calculator():
             return
 
         except ZeroDivisionError:
-            print("Division by 0 is not allowed. Please enter a new expression.\n")
+            print("\nError : division by 0 is not allowed.")
             continue
 
 if __name__ == "__main__" :
+
     menu()
 
    
