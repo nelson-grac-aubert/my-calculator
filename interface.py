@@ -1,7 +1,6 @@
 from tkinter import *
 import calculator
-from tkinter import *
-from tkinter import messagebox
+
 
 win=Tk()
 win.title("Calculator")
@@ -105,10 +104,3 @@ Div_d.grid(row=1,column=5)
 
 
 win.mainloop()
-
-def message_error(): 
-    messagebox.showerror()
-
-root = Tk()
-root.title("Erreur en question")
-root.geometry("300x150")   
