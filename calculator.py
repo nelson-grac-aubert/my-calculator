@@ -189,6 +189,13 @@ def validate_list(formated_list):
         if b not in operators and b not in ["(", ")"] and not is_valid_number(b):
             print(f"\nError: invalid number: {b}")
             return False
+        
+        if is_valid_number(a) and b == "(":
+            print("\nError: missing operator before '('.")
+            return False
+        if a == ")" and is_valid_number(b):
+            print("\nError: missing operator after ')'.")
+            return False
 
     return True
 
