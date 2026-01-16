@@ -117,9 +117,9 @@ def format_string(checked_string):
         if character == "-":
             prev_char = previous_non_space_char(i, checked_string)
 
-            # If next non-space is "(" -> convert to -1 * (
+            # Only convert " -( " to "-1 * (" when - is negative number
             j = next_non_space_index(i + 1, checked_string)
-            if j is not None and checked_string[j] == "(":
+            if (prev_char is None or prev_char in "+-*/%^(") and j is not None and checked_string[j] == "(":
                 input_turned_into_list.append("-1")
                 input_turned_into_list.append("*")
                 i = j  # position on '('
@@ -127,16 +127,12 @@ def format_string(checked_string):
 
             # If previous token allows - , start building negative number
             if prev_char is None or prev_char in "+-*/%^(":
-                # set current_number to "-" and try to consume following spaces+digits/dot
                 current_number = "-"
                 i += 1
-                # skip spaces but keep i at first non-space to continue number parsing
                 while i < L and checked_string[i] == " ":
                     i += 1
-                # if next is digit or dot, continue loop to collect digits
                 if i < L and checked_string[i] in "0123456789.":
                     continue
-                # if next is "(" we already handled above; otherwise leave "-" to be validated later
                 continue
 
         # Number characters, digits or dot
