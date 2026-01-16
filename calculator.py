@@ -66,7 +66,7 @@ def validate_string(allowed_characters):
         last_non_space = None
         for character in user_input[::-1]:
             if character not in " \n\r":
-                last_non_space = ch
+                last_non_space = character
                 break
         if last_non_space is None:
             display_error("\nError: expression is empty.")
@@ -87,16 +87,14 @@ def previous_non_space_char(index, checked_string):
         return checked_string[previous_index]
     return None
 
-def next_non_space_char(index, checked_string):
-    """ Returns the next element of the formated list
-    Used to determine if a - is a negative before an opening parenthese " ( " """
+def next_non_space_index(index, checked_string):
+    """ Return the index of the next non-space character at or after `index`,
+    or None if none exists. """
     i = index
     L = len(checked_string)
     while i < L and checked_string[i] == " ":
         i += 1
-    if i < L:
-        return checked_string[i]
-    return None
+    return i if i < L else None
 
 def format_string(checked_string):
     """ Transforms the user input string into a formated list of numbers and operators """
@@ -113,8 +111,8 @@ def format_string(checked_string):
             prev_char = previous_non_space_char(i, checked_string)
 
             # If next non-space is "(" -> convert to -1 * (
-            j = next_non_space_char(i + 1)
-            if j is not None and checked_string[j] == "(" and (prev_char is None or prev_char in "+-*/%^(("):
+            j = next_non_space_index(i + 1, checked_string)
+            if j is not None and checked_string[j] == "(":
                 input_turned_into_list.append("-1")
                 input_turned_into_list.append("*")
                 i = j  # position on '('
@@ -163,7 +161,8 @@ def format_string(checked_string):
     # Finish by appending last number
     if current_number != "":
         input_turned_into_list.append(current_number)
-
+    
+    print(input_turned_into_list)
     return input_turned_into_list
 
 def is_valid_number(element):
