@@ -87,51 +87,74 @@ def previous_non_space_char(index, checked_string):
     return None
 
 def format_string(checked_string):
-    """ Transforms the user input string into a formated list of numbers and operators 
-    Calculate function will use that list to operate """
+    """ Transforms the user input string into a formatted list of numbers and operators """
     input_turned_into_list = []
     current_number = ""
     i = 0
+    L = len(checked_string)
 
-    while i < len(checked_string):
+    def peek_next_non_space(idx):
+        j = idx
+        while j < L and checked_string[j] == " ":
+            j += 1
+        return j if j < L else None
+
+    while i < L:
         character = checked_string[i]
 
+        # Handle unary minus and "-(...)" with possible spaces
         if character == "-":
             prev_char = previous_non_space_char(i, checked_string)
 
-        # Allow -(...)  →  -1 * (...)
-            if i+1 < len(checked_string) and checked_string[i+1] == "(":
+            # If next non-space is "(" -> convert to -1 * (
+            j = peek_next_non_space(i + 1)
+            if j is not None and checked_string[j] == "(" and (prev_char is None or prev_char in "+-*/%^(("):
                 input_turned_into_list.append("-1")
                 input_turned_into_list.append("*")
-                i += 1
+                i = j  # position on '('
                 continue
 
-            if prev_char is None or prev_char in "+-*//%^(":
+            # If previous token allows unary minus, start building negative number
+            if prev_char is None or prev_char in "+-*/%^((":
+                # set current_number to "-" and try to consume following spaces+digits/dot
                 current_number = "-"
                 i += 1
+                # skip spaces but keep i at first non-space to continue number parsing
+                while i < L and checked_string[i] == " ":
+                    i += 1
+                # if next is digit or dot, continue loop to collect digits
+                if i < L and checked_string[i] in "0123456789.":
+                    continue
+                # if next is "(" we already handled above; otherwise leave "-" to be validated later
                 continue
 
+        # Number characters, digits or dot
         if character in "0123456789.":
             current_number += character
             i += 1
             continue
 
+        # If we have been building a number, finalize it before handling other tokens
         if current_number != "":
             input_turned_into_list.append(current_number)
             current_number = ""
 
+        # Skip spaces
         if character == " ":
             i += 1
             continue
 
-        if character == "/" and i+1 < len(checked_string) and checked_string[i+1] == "/":
+        # Handle '//' operator
+        if character == "/" and i + 1 < L and checked_string[i + 1] == "/":
             input_turned_into_list.append("//")
             i += 2
             continue
 
+        # Append single-character operator or parenthesis
         input_turned_into_list.append(character)
         i += 1
 
+    # Finish by appending last number
     if current_number != "":
         input_turned_into_list.append(current_number)
 
@@ -178,7 +201,11 @@ def validate_list(formated_list):
     for i in range(len(formated_list) - 1):
         a, b = formated_list[i], formated_list[i+1]
 
+        # Two operators in a row: allow when the second is unary '-' and followed by number or '('
         if a in operators and b in operators:
+            if b == "-" and i+2 < len(formated_list) and (is_valid_number(formated_list[i+2]) or formated_list[i+2] == "("):
+                # allowed: binary_op followed by unary minus (e.g., "12 + -3" or "12 + - (3)")
+                continue
             display_error("\nError: two operators in a row.")
             return False
 
@@ -211,7 +238,7 @@ def validate_list(formated_list):
         if a == ")" and is_valid_number(b):
             display_error("\nError: missing operator after ')'.")
             return False
-
+        
     return True
 
 ############################# OPERATIONS ####################################################
