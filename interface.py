@@ -53,21 +53,30 @@ def clear_history():
 
     
 def view_history_window():
-    history_window = Toplevel(win)
-    history_window.title("Calculation History")
-    history_window.geometry("400x400")
-    history_window.configure(background='lightgrey')
+    global history
+    operations_list = []
+    for i, h in enumerate(history, 1):
+        operations_list.append(f"{i}. {h['expression']} = {h['result']}")
+    
+    if not history:
+            calculator.display_error("History is empty.")
+    else:
+        history_window = Toplevel(win)
+        history_window.title("Calculation History")
+        history_window.geometry("400x400")
+        history_window.configure(background='lightgrey')
 
-    label = Label(history_window, text="History", font=('ariel', 18, 'bold'), bg='lightgrey')
-    label.pack(pady=10)
+        history_text = Text(history_window, font=('ariel', 14), bg='white', wrap=WORD)
+        history_text.pack(expand=True, fill=BOTH, padx=10, pady=10)
 
-    history_text = Text(history_window, font=('ariel', 14), bg='white', wrap=WORD)
-    history_text.pack(expand=True, fill=BOTH, padx=10, pady=10)
+        history_text.delete(1.0, 'end')
+        for item in operations_list:
+            history_text.insert('end',item + '\n')
 
-    for item in history:
-        history_text.insert(END, item + "\n")
+        label = Label(history_window, text="History", font=('ariel', 18, 'bold'), bg='lightgrey')
+        label.pack(pady=10)
 
-    history_text.config(state=DISABLED)
+        history_text.config(state=DISABLED)
 
 label=Label(win,font=('ariel' ,20,'bold'),text='Calculator',bg='grey',fg='black')
 label.grid(columnspan=4)
