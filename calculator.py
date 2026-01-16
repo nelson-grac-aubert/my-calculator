@@ -425,6 +425,13 @@ def run_calculator():
         except OverflowError:
             display_error("\nError : overflow, try smaller")
             continue
+        except (TypeError, IndexError, ValueError) : 
+            display_error("\nError : invalid syntax")
+            continue
+        except Exception as e:
+        # dernier recours : logger et informer l'utilisateur
+            display_error("\nError : unexpected error")
+            continue
 
 if __name__ == "__main__" :
 
