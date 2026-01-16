@@ -11,23 +11,26 @@ win.geometry('570x650')
 win.configure(background='grey')
 
 
-def  btnclick(num):
+def btnclick(num):
+    """ Buttons for typing the expression """
     global operator
     operator=operator + str(num)
     _input.set(operator)
 
 def clear():
+    """ Buttons to clear the expression """
     global operator
     operator=""
     _input.set("")
 
 def answer():
+    """ Button to evaluate the result """
     global operator
 
     lst = calculator.format_string(operator)
 
     if not calculator.validate_list(lst):
-        return  # L’erreur a déjà été affichée par display_error()
+        return 
 
     try:
         lst = calculator.resolve_parenthesis(lst)
@@ -50,7 +53,6 @@ def answer():
 def clear_history():
     history.clear()
     json_management.save_history(history)
-
     
 def view_history_window():
     global history
@@ -86,6 +88,8 @@ operator=""
 
 display = Entry(win,font=('ariel' ,30,'bold'), textvariable=_input ,insertwidth=10 , bd=10 ,bg="white",justify='right')
 display.grid(columnspan=4)
+
+################################################ BUTTONS ############################################
 
 b7=Button(win,padx=16,pady=16,bd=4, fg="black", font=('ariel', 20 ,'bold'),text="7",bg="grey", command=lambda: btnclick(7) )
 b7.grid(row=2,column=0)
@@ -163,8 +167,11 @@ View_h.grid(column=2, columnspan=5)
 Clear_h=Button(win,padx=1,pady=5,bd=5,width = 20, fg="black", font=('ariel', 16 ,'bold'),text="Clear History",bg="grey",command=clear_history)
 Clear_h.grid(row=7, columnspan=2)
 
+################################################ BUTTONS ############################################
 
-win.mainloop()
+if __name__ == "main" : 
+
+    win.mainloop()
 
 
 
