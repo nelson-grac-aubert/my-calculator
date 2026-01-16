@@ -1,29 +1,36 @@
 # Python Terminal Calculator
 
-## Description
-Calculatrice qui permet à l'utilisateur d'écrire des expressions mathématiques et de les évaluer.
-Possibilité d'accéder à l'historique et de le supprimer également.
+Calculator
+A simple calculator that lets users type mathematical expressions and evaluate them. 
 
-## Prérequis
-Python
+## Requirements
+Python 3
+Libraries : 
+- json
+- tkinter
+- re
 
-## Fonctionnalités
-- Effectuer un calcul (+, -, *, /, //, ^, %).
-- Consulter l'historique.
-- Effacer l'historique.
-- Historique conversé même apres fermeture du programme.
-- Quitter le programme.
-- Lancer l'interface de la calculatrice.
-- Chaine de charactère a respecter ( message d'erreur en cas de charactère non reconnu ).
+## Features
+- Basic Math Operations (+, -, *, /, //, ^, %).
+- Display history
+- Clear history
+- History kepts between programm launches
+- Use through terminal or GUI
+- Explicit error messages
 
-## Difficultés rencontrées
-Configuration de GitHub
-Ajoute de la prise en compte des parenthèse dans le code.
+## Developpement hardships
+- GitHub use
+- Order of operations and parentheses
+- Error management
 
-## Améliorations possibles
-- Faire une Pop up d'erreur sur l'interface de la calculatrice quand une erreur est detectée.
+## Possible upgrades
+- Allow embedding graphs and tables for functions f(x), proportionality coefficients, and similar data.
+- Improve the graphical interface to be less basic; optimize the layout of the keys inspired by real calculators.
+- Add more mathematical functions such as sin, cos, tan, factorial, etc.
+- Support alternative result formats: prime factorization, scientific notation, and others.
+- Enable reusing a result from history in a new calculation.
 
-## Auteurs
+## Authors
 Angelina Pellat
 Nelson Grac-Aubert
 Rayan Boubsil
