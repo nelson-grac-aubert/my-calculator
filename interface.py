@@ -41,8 +41,12 @@ def answer():
         calculator.display_error("Error: division by 0 is not allowed.")
     except OverflowError:
         calculator.display_error("\nError : overflow, try smaller")
+    except (TypeError, IndexError, ValueError) : 
+        calculator.display_error("\nError : invalid syntax")
+    except Exception as e:
+        # Last resort, in case all previous safeguards fail 
+        calculator.display_error("\nError : unexpected error")
 
-    
 def clear_history():
     history.clear()
     json_management.save_history(history)
