@@ -1,3 +1,4 @@
+import operations
 import json_management
 import re
 from tkinter import messagebox
@@ -255,36 +256,6 @@ def validate_list(formated_list):
         
     return True
 
-############################# OPERATIONS ####################################################
-def multiply(left, right):
-    return float(left) * float(right)
-
-def divide(left, right):
-    right = float(right)
-    if right == 0:
-        raise ZeroDivisionError("Division by 0 is not allowed")
-    return float(left) / (right)
-
-def add(left, right):
-    return float(left) + float(right)
-
-def substract(left, right):
-    return float(left) - float(right)
-
-def modulo(left,right):
-    return float(left) % float(right)
-
-def divide_whole(left, right):
-    right = float(right)
-    if right == 0:
-        raise ZeroDivisionError("Division by 0 is not allowed")
-    return float(left) // (right)
-
-def power(left,right):
-    return float(left) ** float(right)
-
-############################# OPERATIONS ####################################################
-
 def find_matching_open(expression_list, closing_index):
     """ Finds the index of the opening parenthesis that matches the closing one at closing_index"""
     counter = 0
@@ -337,7 +308,7 @@ def pass_power(expression_list):
         current_element = expression_list[i]
 
         if current_element == "^":
-            result[-1] = power(result[-1], expression_list[i+1])
+            result[-1] = operations.power(result[-1], expression_list[i+1])
             i += 2
             continue
 
@@ -355,19 +326,19 @@ def pass_mult_div(expression_list):
         current_element = expression_list[i]
         match current_element:
             case "*":
-                result[-1] = multiply(result[-1], expression_list[i+1])
+                result[-1] = operations.multiply(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case "/":
-                result[-1] = divide(result[-1], expression_list[i+1])
+                result[-1] = operations.divide(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case "//":
-                result[-1] = divide_whole(result[-1], expression_list[i+1])
+                result[-1] = operations.divide_whole(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case "%":
-                result[-1] = modulo(result[-1], expression_list[i+1])
+                result[-1] = operations.modulo(result[-1], expression_list[i+1])
                 i += 2
                 continue
             case _:
@@ -387,9 +358,9 @@ def pass_add_sub(expression_list):
 
         match operator:
             case "+":
-                result = add(result, right)
+                result = operations.add(result, right)
             case "-":
-                result = substract(result, right)
+                result = operations.substract(result, right)
 
         i += 2
 
