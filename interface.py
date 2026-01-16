@@ -1,6 +1,7 @@
 from tkinter import *
 import calculator
 import json_management
+from tkinter import messagebox
 
 calculator.USE_GUI = True
 history = json_management.load_history()
@@ -59,7 +60,8 @@ def view_history_window():
         operations_list.append(f"{i}. {h['expression']} = {h['result']}")
     
     if not history:
-            calculator.display_error("History is empty.")
+            messagebox.showinfo("Info", "History is empty")
+
     else:
         history_window = Toplevel(win)
         history_window.title("Calculation History")
