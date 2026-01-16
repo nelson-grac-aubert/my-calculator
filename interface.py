@@ -24,8 +24,7 @@ def clear():
 def answer():
     global operator
 
-    expr = operator
-    lst = calculator.format_string(expr)
+    lst = calculator.format_string(operator)
 
     if not calculator.validate_list(lst):
         return  # L’erreur a déjà été affichée par display_error()
@@ -34,6 +33,9 @@ def answer():
         lst = calculator.resolve_parenthesis(lst)
         result = calculator.calculate(lst)
         _input.set(result)
+
+        history.append({"expression": operator, "result": result})
+        json_management.save_history(history)
         operator = ""
     except ZeroDivisionError:
         calculator.display_error("Error: division by 0 is not allowed.")
