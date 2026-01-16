@@ -1,4 +1,5 @@
 import json_management
+import re
 from tkinter import messagebox
 
 allowed_characters = '0123456789+-//*().%^ \n\r'
@@ -49,6 +50,11 @@ def validate_string(allowed_characters):
     """ Handles errors that can be detected in the string """
     while True:
         user_input = input("\nEnter your mathematical expression composed of only numbers and operators: ")
+
+        # Use regex library to detect " - - " at start, regardless of empty spaces
+        if re.match(r'^\s*-\s*-', user_input):
+            display_error("\nError : Double minus at start.")
+            continue
 
         if user_input == "":
             display_error("\nError: expression is empty.")
@@ -429,7 +435,7 @@ def run_calculator():
             display_error("\nError : invalid syntax")
             continue
         except Exception as e:
-        # dernier recours : logger et informer l'utilisateur
+        # Last resort, in case all previous safeguards fail 
             display_error("\nError : unexpected error")
             continue
 
