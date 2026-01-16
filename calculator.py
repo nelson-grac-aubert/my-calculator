@@ -98,6 +98,14 @@ def format_string(checked_string):
 
         if character == "-":
             prev_char = previous_non_space_char(i, checked_string)
+
+        # Allow -(...)  →  -1 * (...)
+            if i+1 < len(checked_string) and checked_string[i+1] == "(":
+                input_turned_into_list.append("-1")
+                input_turned_into_list.append("*")
+                i += 1
+                continue
+
             if prev_char is None or prev_char in "+-*//%^(":
                 current_number = "-"
                 i += 1
@@ -164,7 +172,7 @@ def validate_list(formated_list):
         return False
 
     if formated_list[-1] in operators:
-        display_error("\nError: expression cannot end with an operator.")
+        display_error(f"\nError: expression cannot end with this operator : {formated_list[-1]}")
         return False
 
     for i in range(len(formated_list) - 1):
