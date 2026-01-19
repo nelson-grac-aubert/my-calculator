@@ -169,9 +169,7 @@ Clear_h.grid(row=7, columnspan=2)
 
 ################################################ BUTTONS ############################################
 
-if __name__ == "main" : 
-
-    win.mainloop()
+win.mainloop()
 
 
 

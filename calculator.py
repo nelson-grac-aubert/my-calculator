@@ -165,7 +165,6 @@ def format_string(checked_string):
     if current_number != "":
         input_turned_into_list.append(current_number)
     
-    print(input_turned_into_list)
     return input_turned_into_list
 
 def is_valid_number(element):
